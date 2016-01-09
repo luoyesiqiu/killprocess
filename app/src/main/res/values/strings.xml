@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">杀死程序</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="open">请开启“查看使用情况权限”</string>
+</resources>
