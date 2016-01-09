@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                //如果安卓版本大于4.4
+                //濡傛灉澶т簬4.4
                 if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
 
                     if(sp.getBoolean("isFirst",true)==true)
