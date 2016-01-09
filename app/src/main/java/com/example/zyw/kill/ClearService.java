@@ -11,6 +11,7 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import java.lang.reflect.Method;
 import java.util.Calendar;
 import java.util.List;
 
@@ -60,14 +61,23 @@ public class ClearService extends Service {
         long beforeMem = getAvailMemory(ClearService.this);
 
         int count = 0;
+
+
+        ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
         for(int i=0;i<list.size();i++)
         {
+
             UsageStats us=list.get(i);
-            UsageStatsManager usm=getUsageStatsManager(this);
-
-            ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
-
-            am.killBackgroundProcesses(us.getPackageName());
+           // UsageStatsManager usm=getUsageStatsManager(this);
+           // am.killBackgroundProcesses(us.getPackageName());
+            if(us.getPackageName().equals("com.android.systemui")) {
+                continue;
+            }
+            else if(us.getPackageName().equals("com.example.zyw.kill"))
+            {
+                continue;
+            }
+            forceStopPackage(am, us.getPackageName());
             count++;
         }
 
@@ -85,7 +95,7 @@ public class ClearService extends Service {
         calendar.add(Calendar.YEAR, -1);
         long startTime = calendar.getTimeInMillis();
 
-        List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,startTime,endTime);
+        List<UsageStats> usageStatsList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY, startTime, endTime);
         return usageStatsList;
     }
 
@@ -158,4 +168,13 @@ public class ClearService extends Service {
         Toast.makeText(getApplicationContext(), text, Toast.LENGTH_LONG).show();
     }
 
+    public void forceStopPackage(ActivityManager am,String packageName) {
+        try {
+            Method forceStopPackage = am.getClass().getDeclaredMethod("forceStopPackage", String.class);
+            forceStopPackage.setAccessible(true);
+            forceStopPackage.invoke(am, packageName);
+        } catch (Exception e) {
+
+        }
+    }
 }
